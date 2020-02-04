@@ -27,6 +27,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     //ID's used by the  notification PI in Android
     static final int NOTIFICATION_ID = 109011;
+
     static final String NOTIFICATION_TAG = "EMSNotification";
     static final String TAG = "EMS:NotificationReceive";
 
@@ -48,17 +49,21 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
         } else if (intent.getAction().equals(context.getPackageName() + EMSIntents.EMS_OPEN_NOTIFICATION)) {
             EMSMobileSDK.Default().pushNotificationRegisterOpen(context, intent);
-            // launch app
-            try {
-                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-                if (launchIntent == null)
-                    Log.d(TAG, "Unable to find launch intent");
-                launchIntent.putExtra("EMS_OPEN_FROM_NOTIFICATION", true);
-                context.startActivity(launchIntent);
-                Log.d(TAG, "Leaving Receiver: " + launchIntent.getClass().toString());
-            } catch (Exception ex) {
-                Log.d(TAG, ex.getMessage());
+            Object ems_open = intent.getExtras().get("ems_open");
+            if (ems_open != null) {
+                // launch app
+                try {
+                    Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+                    if (launchIntent == null)
+                        Log.d(TAG, "Unable to find launch intent");
+                    launchIntent.putExtra("EMS_OPEN_FROM_NOTIFICATION", true);
+                    context.startActivity(launchIntent);
+                    Log.d(TAG, "Leaving Receiver: " + launchIntent.getClass().toString());
+                } catch (Exception ex) {
+                    Log.d(TAG, ex.getMessage());
+                }
             }
+
         }
     }
 
